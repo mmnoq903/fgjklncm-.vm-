@@ -1,0 +1,317 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>Project Omega Presentation Script</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=VT323&family=IBM+Plex+Sans:ital,wght@0,400;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&display=swap">
+<style>
+  /* Layout: one reading column; a sticky speaker switcher; each speaker is a "terminal window" card. Deliberately single dark theme to match the Project Omega site. */
+  :root {
+    --bg: #04100a;
+    --panel: #071a10;
+    --line: #1c5a33;
+    --fg: #d9f7e2;
+    --muted: #84b894;
+    --accent: #3dff74;
+    --accent-ink: #022010;
+    --cue: #8fe3ff;
+    --fill: #ffd76a;
+    --font-display: "VT323", "IBM Plex Mono", ui-monospace, Menlo, monospace;
+    --font-body: "IBM Plex Sans", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, Menlo, Consolas, monospace;
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font-body);
+    font-size: 17px;
+    line-height: 1.65;
+    padding-left: max(16px, env(safe-area-inset-left, 0px));
+    padding-right: max(16px, env(safe-area-inset-right, 0px));
+    padding-block: 0 64px;
+  }
+  body::before {
+    content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 10; background: var(--bg);
+  }
+  .wrap { max-width: 760px; margin: 0 auto; display: grid; gap: 28px; }
+
+  header { padding-top: 40px; display: grid; gap: 10px; }
+  .prompt { font-family: var(--font-mono); font-size: 13px; color: var(--muted); letter-spacing: .04em; }
+  h1 {
+    font-family: var(--font-display); font-weight: 400; font-size: clamp(44px, 9vw, 76px);
+    line-height: .95; margin: 0; color: var(--accent); letter-spacing: .02em; text-wrap: balance;
+    text-shadow: 0 0 14px rgba(61,255,116,.35);
+  }
+  .lede { margin: 0; color: var(--fg); max-width: 60ch; }
+  .meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .chip { font-family: var(--font-mono); font-size: 12px; letter-spacing: .05em; text-transform: uppercase; border: 1px solid var(--line); padding: 3px 9px; color: var(--muted); }
+
+  nav.switch {
+    position: sticky; top: env(safe-area-inset-top, 0px); z-index: 5;
+    background: var(--bg); border-bottom: 1px solid var(--line);
+    display: flex; flex-wrap: wrap; gap: 6px; padding-block: 10px;
+  }
+  .switch button {
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600;
+    background: transparent; color: var(--accent); border: 1px solid var(--line);
+    padding: 6px 11px; cursor: pointer;
+  }
+  .switch button:hover { border-color: var(--accent); }
+  .switch button[aria-pressed="true"] { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .switch button:focus-visible { outline: 2px dashed var(--fg); outline-offset: 2px; }
+
+  h2 { font-family: var(--font-display); font-weight: 400; font-size: 34px; line-height: 1.05; color: var(--accent); margin: 0; text-wrap: balance; }
+  h3 { font-family: var(--font-mono); font-size: 13px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); margin: 0; font-weight: 600; }
+
+  .runsheet { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 15px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-family: var(--font-mono); font-size: 12px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); font-weight: 600; }
+  td.t { font-family: var(--font-mono); font-variant-numeric: tabular-nums; color: var(--accent); white-space: nowrap; }
+
+  .win { border: 1px solid var(--line); background: var(--panel); min-width: 0; }
+  .bar {
+    display: flex; flex-wrap: wrap; justify-content: space-between; gap: 6px 14px; align-items: baseline;
+    background: var(--accent); color: var(--accent-ink); padding: 6px 14px;
+    font-family: var(--font-mono); font-size: 13px; font-weight: 600; letter-spacing: .04em;
+  }
+  .bar .time { font-variant-numeric: tabular-nums; }
+  .body { padding: 18px 20px 20px; display: grid; gap: 14px; }
+  .body p { margin: 0; max-width: 65ch; }
+  .name { font-family: var(--font-mono); font-size: 14px; color: var(--muted); }
+  .name b { color: var(--fill); font-weight: 600; }
+
+  .cue {
+    font-family: var(--font-mono); font-size: 14px; color: var(--cue);
+    border-left: 2px solid var(--cue); padding: 2px 0 2px 12px; max-width: 65ch;
+  }
+  .fill { color: var(--fill); background: rgba(255,215,106,.08); padding: 0 3px; border-bottom: 1px dashed var(--fill); }
+  .hand { border-top: 1px dashed var(--line); padding-top: 12px; }
+  .hand p { font-style: italic; }
+
+  .qa { display: grid; gap: 14px; }
+  .q { font-weight: 600; color: var(--accent); }
+  .who { font-family: var(--font-mono); font-size: 12px; color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+  dl.say { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; margin: 0; }
+  dl.say dt { font-weight: 600; }
+  dl.say dd { margin: 0; font-family: var(--font-mono); font-size: 14px; color: var(--muted); }
+  ul.tips { margin: 0; padding-left: 1.2em; display: grid; gap: 6px; max-width: 65ch; }
+  ul.tips li::marker { color: var(--accent); }
+  .lang { display: grid; gap: 8px; }
+  .lang div { display: grid; grid-template-columns: 11rem 1fr; gap: 12px; border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+  .lang span:first-child { font-family: var(--font-mono); font-size: 13px; color: var(--accent); }
+  @media (max-width: 560px) {
+    body { font-size: 16px; }
+    .lang div, dl.say { grid-template-columns: 1fr; gap: 2px; }
+    .body { padding: 14px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="prompt">&gt; cat /omega/presentation/script.txt</div>
+    <h1>PROJECT OMEGA</h1>
+    <p class="lede">Presentation script for five speakers. Driving question: <em>How can we make our school safer and more supportive for every student?</em> Each speaker can read only their own part with the buttons below.</p>
+    <div class="meta">
+      <span class="chip">5 speakers</span>
+      <span class="chip" id="total-time">about 7 min</span>
+      <span class="chip">English B1–B2</span>
+      <span class="chip">Grade 10 · Module 2</span>
+    </div>
+  </header>
+
+  <nav class="switch" aria-label="Show part">
+    <button type="button" data-show="all" aria-pressed="true">All</button>
+    <button type="button" data-show="speaker-1" aria-pressed="false">Speaker 1</button>
+    <button type="button" data-show="speaker-2" aria-pressed="false">Speaker 2</button>
+    <button type="button" data-show="speaker-3" aria-pressed="false">Speaker 3</button>
+    <button type="button" data-show="speaker-4" aria-pressed="false">Speaker 4</button>
+    <button type="button" data-show="speaker-5" aria-pressed="false">Speaker 5</button>
+    <button type="button" data-show="questions" aria-pressed="false">Q&amp;A</button>
+  </nav>
+
+  <section data-part="overview" class="runsheet" aria-labelledby="run-title">
+    <h3 id="run-title">Running order</h3>
+    <table>
+      <thead><tr><th>Speaker</th><th>Topic</th><th>On screen</th><th>Time</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>The problem: why students stay silent</td><td>index.html</td><td class="t" data-time-for="speaker-1"></td></tr>
+        <tr><td>2</td><td>Our solution: what Project Omega is</td><td>index.html → about.html</td><td class="t" data-time-for="speaker-2"></td></tr>
+        <tr><td>3</td><td>Live demo: the AI chat</td><td>chat.html</td><td class="t" data-time-for="speaker-3"></td></tr>
+        <tr><td>4</td><td>Send Proof and how anonymity works</td><td>sendpruf.html</td><td class="t" data-time-for="speaker-4"></td></tr>
+        <tr><td>5</td><td>Limits, impact and conclusion</td><td>about.html</td><td class="t" data-time-for="speaker-5"></td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- SPEAKER 1 -->
+  <article class="win" id="speaker-1" data-part="speaker-1">
+    <div class="bar"><span>SPEAKER_1 · The problem</span><span class="time" data-time></span></div>
+    <div class="body">
+      <div class="name">Name: <b>_______________</b></div>
+      <div class="cue">[ Home page of Project Omega is on the screen. ]</div>
+      <div data-script>
+        <p>Good morning, everyone. We are Grade 10 students, and today we would like to present our project, <strong>Project Omega</strong>. Our driving question was: how can we make our school safer and more supportive for every student?</p>
+        <p>Let me start with a simple question. Have you ever seen someone being laughed at in a class chat and decided to stay silent? I think most of us have. Bullying is not only pushing or shouting in the corridor. Today a lot of it happens online, in group chats and on social media, and it follows students home.</p>
+        <p>During our research, we found out that many students never report bullying. They are afraid of revenge, they don't want to be called a snitch, or they think nobody will believe them. <span class="fill">[Add one result from your survey here, for example: "In our survey, 18 out of 30 students said they would not tell a teacher."]</span></p>
+        <p>So we asked ourselves: what if students could ask for help without showing who they are? That simple idea turned into Project Omega.</p>
+      </div>
+      <div class="hand"><p>Now <span class="fill">[Speaker 2]</span> will tell you what Project Omega is and how it looks.</p></div>
+    </div>
+  </article>
+
+  <!-- SPEAKER 2 -->
+  <article class="win" id="speaker-2" data-part="speaker-2">
+    <div class="bar"><span>SPEAKER_2 · Our solution</span><span class="time" data-time></span></div>
+    <div class="body">
+      <div class="name">Name: <b>_______________</b></div>
+      <div data-script>
+        <p>Thank you. Project Omega is a website that helps students deal with bullying anonymously. Anonymous means that nobody knows who you are: not the teachers, not the principal, and not even us, the creators.</p>
+        <p>The website has four pages. The home page explains what Omega can do. The About page shows how it works and why it is safe. On the Chat page you can talk to an AI, and on the Send Proof page you can send evidence to the principal.</p>
+        <div class="cue">[ Scroll the home page slowly. Then click ABOUT.sys in the bottom bar. ]</div>
+        <p>You have probably noticed our design. We chose a hacker-terminal style with green text on a black background, because we wanted the site to look cool for teenagers and less boring than a typical school website.</p>
+        <p>There is also a red <strong>Quick Exit</strong> button. If someone walks up behind you while you are using the site, one click takes you away immediately, to an ordinary Google page.</p>
+      </div>
+      <div class="hand"><p><span class="fill">[Speaker 3]</span> will now show you the most interesting part: the AI chat.</p></div>
+    </div>
+  </article>
+
+  <!-- SPEAKER 3 -->
+  <article class="win" id="speaker-3" data-part="speaker-3">
+    <div class="bar"><span>SPEAKER_3 · Live demo: AI chat</span><span class="time" data-time></span></div>
+    <div class="body">
+      <div class="name">Name: <b>_______________</b></div>
+      <div class="cue">[ Click CHAT.exe in the bottom bar. ]</div>
+      <div data-script>
+        <p>Thanks. This is the chat. Here a student can talk to OMEGA, our AI assistant, about anything: bullying, stress before exams, problems with friends, or even homework. It is not a script with ready-made answers. It is a real AI model, so it answers every person differently, and it can reply in English, Russian or Kazakh.</p>
+        <p>Let me show you. I'm going to type: "People in my class chat keep posting memes about me. What should I do?"</p>
+        <div class="cue">[ Type the message, press Enter and wait 5–10 seconds. ]</div>
+        <p>As you can see, the AI doesn't blame the student. It gives practical advice: take screenshots, don't react emotionally, and talk to an adult you trust. If the situation sounds serious, it suggests sending an anonymous report to the principal.</p>
+        <p>One more important thing: every chat is single-use. If I refresh the page…</p>
+        <div class="cue">[ Press Refresh. ]</div>
+        <p>…everything is gone. Nothing is saved anywhere. When a student has finished talking, they press <strong>End Session and Report</strong>, and that takes us to the last step.</p>
+      </div>
+      <div class="hand"><p><span class="fill">[Speaker 4]</span>, over to you.</p></div>
+    </div>
+  </article>
+
+  <!-- SPEAKER 4 -->
+  <article class="win" id="speaker-4" data-part="speaker-4">
+    <div class="bar"><span>SPEAKER_4 · Send Proof &amp; anonymity</span><span class="time" data-time></span></div>
+    <div class="body">
+      <div class="name">Name: <b>_______________</b></div>
+      <div class="cue">[ Click END SESSION &amp; REPORT, then ERASE &amp; SEND PROOF. ]</div>
+      <div data-script>
+        <p>This is the Send Proof page. Here a student describes what happened, when and where, and can attach screenshots, photos or videos. When they press <strong>Transmit Anonymously</strong>, the letter goes straight to the principal's email, and the student sees the message: "Thank you for your letter. We will help you."</p>
+        <p>But how do we make it really anonymous? We used three main ideas.</p>
+        <p>First, there is no database. If we don't save anything, nothing can leak.</p>
+        <p>Second, the letter is sent from Project Omega's address, not from the student's own email.</p>
+        <p>Third, and this is the part we are most proud of, we clean the files. A photo from your phone usually contains hidden information called <strong>metadata</strong>: the GPS location where the photo was taken, the phone model and the date. If we sent the photo as it is, the principal could find out where the student lives. Our website removes this information before sending, and it also renames every file to "evidence-01", "evidence-02" and so on.</p>
+        <p>So the principal gets the facts and the proof, but not the name.</p>
+      </div>
+      <div class="hand"><p><span class="fill">[Speaker 5]</span> will finish our presentation.</p></div>
+    </div>
+  </article>
+
+  <!-- SPEAKER 5 -->
+  <article class="win" id="speaker-5" data-part="speaker-5">
+    <div class="bar"><span>SPEAKER_5 · Limits, impact, conclusion</span><span class="time" data-time></span></div>
+    <div class="body">
+      <div class="name">Name: <b>_______________</b></div>
+      <div data-script>
+        <p>Thank you. Of course, no project is perfect, and we want to be honest about its limits.</p>
+        <p>First, if a student writes their own name or very personal details in the letter, the principal may guess who they are. That's why the website reminds users to be careful.</p>
+        <p>Second, the AI is not a psychologist. It can listen and give advice, but in serious cases students should also talk to an adult. If someone is in danger, the site shows two numbers: 112 for emergencies and 150, the free helpline for children and youth in Kazakhstan.</p>
+        <p>Third, the principal cannot reply to the student. That is the price of full anonymity.</p>
+        <p>So what difference can Omega make? We believe it makes reporting easier, safer and faster than telling someone face to face. It is especially useful for students who feel they have nobody to turn to. And if more students speak up, bullies will understand that their actions have consequences, and the school can act earlier.</p>
+        <p>In the future, we would like to <span class="fill">[choose your ideas: install Omega on a computer in the school library, translate the pages into Kazakh and Russian, and agree on a clear plan with the school psychologist for every report]</span>.</p>
+        <p>To sum up: bullying grows when people stay silent. Project Omega gives every student a safe way to break that silence. Thank you for listening. We are happy to answer your questions.</p>
+      </div>
+    </div>
+  </article>
+
+  <!-- Q&A -->
+  <section class="win" id="questions" data-part="questions" aria-labelledby="qa-title">
+    <div class="bar"><span id="qa-title">Q&amp;A_PREP.txt · possible questions</span><span>prepared answers</span></div>
+    <div class="body qa">
+      <div><div class="who">Answers: Speaker 4</div><p class="q">Can you, the creators, read the chats?</p><p>No. The website has no database, so the chats are not saved anywhere. They only exist in the open browser tab, and they disappear when you close or refresh the page.</p></div>
+      <div><div class="who">Answers: Speaker 3</div><p class="q">Does the AI company see the messages?</p><p>Yes, the text is sent to the AI, Google Gemini, so that it can write an answer. But it never gets the student's name, account or phone. That's why we tell users not to write real names in the chat.</p></div>
+      <div><div class="who">Answers: Speaker 5</div><p class="q">What if someone sends a fake report to get another student in trouble?</p><p>An anonymous report is a signal, not a punishment. The principal still checks the evidence and talks to the people involved before doing anything.</p></div>
+      <div><div class="who">Answers: Speaker 3</div><p class="q">Is the AI always right?</p><p>No AI is always right. Ours is told to be supportive and careful, and to send people to a trusted adult or the helpline in serious cases. But it is a helper, not a replacement for a real psychologist.</p></div>
+      <div><div class="who">Answers: Speaker 2</div><p class="q">How much does it cost?</p><p>Nothing at the moment. The AI runs on a free Google Gemini plan, and the email service is free for up to 100 letters a day, which is more than enough for one school.</p></div>
+      <div><div class="who">Answers: Speaker 4</div><p class="q">Why does it work only on one computer (localhost)?</p><p>Because it is safer for a school project. Nobody from the internet can connect to it. If the school wanted to use it everywhere, we would need a proper secure server.</p></div>
+    </div>
+  </section>
+
+  <section class="win" data-part="overview" aria-labelledby="tips-title">
+    <div class="bar"><span id="tips-title">BEFORE_YOU_PRESENT.txt</span><span>checklist</span></div>
+    <div class="body">
+      <ul class="tips">
+        <li>Start the site with <span style="font-family:var(--font-mono)">npm start</span> 10 minutes before and test the chat once. The AI needs internet.</li>
+        <li>Take screenshots of a good chat answer in advance. If the Wi-Fi fails, show the screenshots instead.</li>
+        <li>Don't press Transmit Anonymously during the demo, or a real letter will go to the principal. Just show the form.</li>
+        <li>Fill in the yellow parts: your names, one survey result and your future ideas.</li>
+        <li>Rehearse the handovers. The last sentence of each part introduces the next speaker.</li>
+        <li>Look at the audience, not at the screen, and speak a little slower than usual.</li>
+      </ul>
+      <h3>Tricky words</h3>
+      <dl class="say">
+        <dt>anonymous</dt><dd>uh-NON-ih-mus</dd>
+        <dt>anonymity</dt><dd>an-uh-NIM-ih-tee</dd>
+        <dt>metadata</dt><dd>MET-uh-day-tuh</dd>
+        <dt>psychologist</dt><dd>sy-KOL-uh-jist (the "p" is silent)</dd>
+        <dt>evidence</dt><dd>EV-ih-dens</dd>
+        <dt>Omega</dt><dd>oh-MEG-uh or OH-meg-uh</dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="win" data-part="overview" aria-labelledby="lang-title">
+    <div class="bar"><span id="lang-title">MODULE_2_LANGUAGE.txt</span><span>grammar used in the script</span></div>
+    <div class="body lang">
+      <div><span>Conditionals</span><span>"If we don't save anything, nothing can leak." · "If we sent the photo as it is, the principal could find out…" · "If more students speak up, bullies will understand…"</span></div>
+      <div><span>Comparison</span><span>"less boring than a typical school website" · "easier, safer and faster than telling someone face to face"</span></div>
+      <div><span>Phrasal verbs with turn</span><span>"That simple idea turned into Project Omega." · "students who feel they have nobody to turn to"</span></div>
+      <div><span>Infinitive / -ing</span><span>"decided to stay silent" · "afraid of revenge" · "Have you ever seen someone being laughed at…"</span></div>
+      <div><span>Adjective formation</span><span>anonymous · supportive · practical · useful · emotional</span></div>
+    </div>
+  </section>
+</div>
+
+<script>
+  (function () {
+    // Speaking time at about 120 words per minute (a calm B1–B2 pace).
+    const WPM = 120;
+    const fmt = (sec) => `${Math.floor(sec / 60)}:${String(Math.round(sec % 60)).padStart(2, "0")}`;
+    let total = 0;
+    document.querySelectorAll("article[data-part]").forEach((art) => {
+      const words = Array.from(art.querySelectorAll("[data-script] p, .hand p"))
+        .map((p) => p.textContent.replace(/\[[^\]]*\]/g, " ").trim().split(/\s+/).filter(Boolean).length)
+        .reduce((a, b) => a + b, 0);
+      const sec = Math.round((words / WPM) * 60) + 10; // + a little for the on-screen actions
+      total += sec;
+      const label = `~${fmt(sec)} · ${words} words`;
+      art.querySelector("[data-time]").textContent = label;
+      const cell = document.querySelector(`[data-time-for="${art.id}"]`);
+      if (cell) cell.textContent = `~${fmt(sec)}`;
+    });
+    document.getElementById("total-time").textContent = `about ${Math.round(total / 60)} min + Q&A`;
+
+    // Show one speaker's part, or everything.
+    const buttons = document.querySelectorAll(".switch button");
+    const parts = document.querySelectorAll("[data-part]");
+    function show(id) {
+      if (!document.querySelector(`.switch [data-show="${id}"]`)) id = "all";
+      parts.forEach((p) => (p.hidden = id !== "all" && p.dataset.part !== id));
+      buttons.forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.show === id)));
+    }
+    buttons.forEach((b) => b.addEventListener("click", () => {
+      show(b.dataset.show);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }));
+    show((location.hash || "").slice(1) || "all");
+  })();
+</script>
+
+</body></html>
